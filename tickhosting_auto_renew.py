@@ -22,25 +22,23 @@ def run_server():
 
 # --- Selenium Bot ---
 def run_bot():
-    # Setup Chrome options for Render (headless, no GUI)
     chrome_options = Options()
     chrome_options.add_argument("--headless")  
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.binary_location = "/usr/bin/chromium-browser"  # Chromium path on Render
+    chrome_options.binary_location = "/usr/bin/chromium-browser"  # Adjust if needed
 
-    # Start WebDriver
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()),
         options=chrome_options
     )
 
-    driver.get("https://asia.tickhosting.com/server/cca52f8a")
-    time.sleep(5)
-
     try:
-        # Try to find CAPTCHA checkbox
+        driver.get("https://asia.tickhosting.com/server/cca52f8a")
+        time.sleep(5)
+
+        # Try to find CAPTCHA iframe and click checkbox
         iframe = driver.find_element(By.XPATH, "//iframe[contains(@src, 'recaptcha')]")
         driver.switch_to.frame(iframe)
         checkbox = driver.find_element(By.CLASS_NAME, "recaptcha-checkbox-border")
@@ -50,7 +48,8 @@ def run_bot():
         driver.switch_to.default_content()
 
         time.sleep(random.uniform(3.0, 6.0))
-        # Click Renew button
+
+        # Find and click Renew button
         renew_button = driver.find_element(By.XPATH, "//button[contains(text(),'Renew')]")
         time.sleep(random.uniform(1.0, 2.0))
         renew_button.click()
@@ -59,31 +58,17 @@ def run_bot():
     except Exception as e:
         print("❌ Error during automation:", e)
 
-    time.sleep(5)
-    driver.quit()
+    finally:
+        time.sleep(5)
+        driver.quit()
+        print("✅ Browser closed")
 
 # --- Main ---
 if __name__ == "__main__":
-    # Run Flask server in separate thread
+    # Start Flask server in a separate thread
     threading.Thread(target=run_server).start()
-    # Run the bot once (you can schedule with cron if needed)
+
+    # Run the Selenium bot once (or loop as needed)
     run_bot()
 
-# Wait before closing to observe the result
-time.sleep(5)
-driver.quit()
-
-
-from flask import Flask
-import os
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return "Bot is running\n"
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 3000))
-    app.run(host='0.0.0.0', port=port)
 
