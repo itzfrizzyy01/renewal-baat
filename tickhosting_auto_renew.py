@@ -14,28 +14,46 @@ driver.get("https://asia.tickhosting.com/server/cca52f8a")
 # Wait for page to load
 time.sleep(5)
 
-# Switch to the CAPTCHA iframe
-iframe = driver.find_element(By.XPATH, "//iframe[contains(@src, 'recaptcha')]")
-driver.switch_to.frame(iframe)
+try:
+    # Switch to CAPTCHA iframe
+    iframe = driver.find_element(By.XPATH, "//iframe[contains(@src, 'recaptcha')]")
+    driver.switch_to.frame(iframe)
 
-# Find the checkbox and click it
-checkbox = driver.find_element(By.CLASS_NAME, "recaptcha-checkbox-border")
+    # Find the checkbox
+    checkbox = driver.find_element(By.CLASS_NAME, "recaptcha-checkbox-border")
 
-# Human-like random delay
-time.sleep(random.uniform(1.0, 2.5))
+    # Human-like random delay
+    time.sleep(random.uniform(1.0, 2.5))
 
-# Move mouse near the checkbox using PyAutoGUI (optional, for human-like behavior)
-# import pyautogui
-# pyautogui.moveTo(checkbox.location['x'] + 5, checkbox.location['y'] + 5, duration=random.uniform(0.5, 1.0))
+    # Click the checkbox
+    checkbox.click()
 
-# Click the checkbox
-checkbox.click()
+    print("CAPTCHA checkbox clicked!")
 
-print("Checkbox clicked! Now handle CAPTCHA manually if needed.")
+    # Switch back to main content
+    driver.switch_to.default_content()
 
-# Wait before closing
-time.sleep(10)
+    # Wait for user or CAPTCHA challenge to settle
+    time.sleep(random.uniform(3.0, 5.0))
+
+    # Find the Renew button (adjust if needed)
+    renew_button = driver.find_element(By.XPATH, "//button[contains(text(),'Renew')]")
+
+    # Move with random delay
+    time.sleep(random.uniform(1.0, 2.0))
+
+    # Click the Renew button
+    renew_button.click()
+
+    print("Renew button clicked!")
+
+except Exception as e:
+    print("Error:", e)
+
+# Wait before closing to observe the result
+time.sleep(5)
 driver.quit()
+
 
 // --- Tiny web server for Render ---
 const http = require("http");
