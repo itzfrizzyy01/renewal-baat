@@ -36,3 +36,10 @@ print("Checkbox clicked! Now handle CAPTCHA manually if needed.")
 # Wait before closing
 time.sleep(10)
 driver.quit()
+
+// --- Tiny web server for Render ---
+const http = require("http");
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("Bot is running\n");
+}).listen(process.env.PORT || 3000);
