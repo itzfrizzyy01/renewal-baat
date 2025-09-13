@@ -55,9 +55,16 @@ time.sleep(5)
 driver.quit()
 
 
-# --- Tiny web server for Render ---
-const http = require("http");
-http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Bot is running\n");
-}).listen(process.env.PORT || 3000);
+from flask import Flask
+import os
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Bot is running\n"
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 3000))
+    app.run(host='0.0.0.0', port=port)
+
